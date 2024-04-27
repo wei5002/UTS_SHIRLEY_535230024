@@ -55,9 +55,55 @@ async function getUsers(request, response, next) {
           return b[fieldName].localeCompare(a[fieldName]);
         }
       });
-    }
 
-    return response.status(200).json(sortUsers);
+    }
+      const page_number = parseInt(request.query.page_number) || 1;
+      const page_size = parseInt (request.query.page_size) ||10;
+      //parseInt = untuk mengubah string menjadi  bilangan integer
+
+      const total_users = sortUsers.length;
+      const total_page = Math.ceil(total_users/page_size);
+      //ceil buat pembulatan bilangan ke arah yang lebih besar seperti dari 4,2 jadi 5 page gitu.
+
+      //jika page_numbernya tidak ada data atau <1, maka dia akan tetep memunculkan page 1
+      if(page_number < 1 || !Number.isInteger(page_number)){
+        page_number = 1;
+      }
+
+      // karna total page sudah diketahui jika page numbernya lebih besar, maka page numbernya akan menjadi total page
+      if(page_number > total_page){
+        page_number= total_page;
+      }
+
+      // awal penggambilan ini untuk menghitung indeks pertama dari data yang akan di ambil
+      // misalkan page_number =1 dan page_size =10, maka indeks awal yang di ambil adalah data yangindeks 0
+      // jika page_number =2 maka ambil indeks ke 10
+      const awalPengambilan = (page_number - 1 ) * page_size; 
+      const akhirPengambilan = awalPengambilan + page_size;
+      // ini sama seperti awalPengambilan, cuman ini akhirPengambilan, 
+      // jadi misalkan page_number =10 page_size =10, maka indeks akhir akanmenjadi 10.
+      // jika page_number =2 maka indeks akhir adalah 20
+
+      // mengambil potongan dari sortUsers yang sudah di urutkan berdasarkan indeks awal hingga akhir
+      const hasil = sortUsers.slice (awalPengambilan, akhirPengambilan);
+
+      // jika masih terdapat page_number atau > 1 (2) maka hasilnya akan menjadi True, jika dia pas 1 maka hasilnya akan menjadi False
+      const has_previous_page = page_number > 1;
+      const has_next_page = page_number< total_page;
+      // jika page_number < total_page, seperti jika total page 4 dan page_number 3 artinya 3<4 artinya True, sebaliknya juga 
+
+      // untuk pemanggilan data data yang di atas
+      const seluruhData ={
+        page_number : page_number,
+        page_size : page_size,
+        count: hasil.length,
+        total_page: total_page,
+        has_previous_page: has_previous_page,
+        has_next_page: has_next_page,
+        data : hasil
+      }
+
+    return response.status(200).json(seluruhData);
   } catch (error) {
     return next(error);
   }

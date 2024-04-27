@@ -5,7 +5,7 @@ const { hashPassword, passwordMatched } = require('../../../utils/password');
  * Get list of users
  * @returns {Array}
  */
-async function getUsers(sort, search) {
+async function getUsers(sort, search, page_size, page_number) {
   const users = await usersRepository.getUsers(sort);
 
   if(search){
@@ -15,12 +15,31 @@ async function getUsers(sort, search) {
       throw new Error ('Field name hanya bisa dimasukkan "name" atau "email" saja');
     }
 
-    const hasilSearch = users.filter(user=>{
+    const hasilSearch = users.filter(user=>{ //membuat array baru dengan filter
       const nilaiField = user[searchFieldName].toUpperCase();
+      // toUpperCase untuk mengonversi kedua nilai menjadi huruf besar 
       const nilaiSearch = search_key.toUpperCase();
       return nilaiField.includes(nilaiSearch);
+      // includes biar tidak menjadi case sensitive(unsensitif)
     });
     users = hasilSearch;
+  }
+
+  if(page_size && page_number){
+    if(!Number.isInteger(page_size)|| page_size<1 || !Number.isInteger(page_number)||page_number<1){
+      throw new Error(
+        'page sizenya sama page number harus bilangannya integer positid'
+      );
+    }
+
+    // menentukan indeks awal array dari potogan data yang diambil
+    const awalArray =(page_number-1)*page_size;
+    
+    // menghitung indeks akhir dari potongan data yang akan diambil
+    const akhirArray = page_number*page_size;
+
+    users=users.slice(awalArray,akhirArray);
+    // mengambil data dari pengguna users mulai dari indeks awalArray hingga sebelum akhirarray
   }
 
   const results = [];

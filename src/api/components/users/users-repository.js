@@ -5,7 +5,7 @@ const { User } = require('../../../models');
  * Get a list of users
  * @returns {Promise}
  */
-async function getUsers(sort,search) {
+async function getUsers(sort,search, page_size, page_number) {
   let users;
 
   const query ={};
@@ -39,9 +39,20 @@ async function getUsers(sort,search) {
       sortApa[fieldName]=-1; //kebalikannya yaitu turun urutannya 
     }
 
-    users = await User.find({}).sort(sortApa);
+    users = await User.find(query).sort(sortApa);
   } else {
-    users = await User.find({});
+    users = await User.find(query);
+  }
+
+  // memeriksa page_size sama page_number sudah ada belum atau valid belum
+  if(page_size && page_number){             
+    const pass = (page_number-1)*page_size;   //menghitung indeks awal
+    users= users.slice(pass,pass+page_size);
+
+    if(users.length ===0 && pass>0){ // memeriksa users yang kosong apakah sudah melewati halaman pertama
+      //jika terjadi, maka halaman yang memiliki data kosong bukan halaman pertama 
+      return await getUsers(sort, search, page_size, page_number-1);
+    }
   }
   return users;
 }
