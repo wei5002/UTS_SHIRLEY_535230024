@@ -4,8 +4,30 @@ const { User } = require('../../../models');
  * Get a list of users
  * @returns {Promise}
  */
-async function getUsers() {
-  return User.find({});
+async function getUsers(sort) {
+  let users;
+
+  if (sort){
+    const [fieldName, sortOrder]= sort.split(':');
+
+    if(fieldName !== 'email' && fieldName !== 'name'){
+      throw new Error (
+        'Sort order yang dapat diisi hanya "asc" atau "desc" saja'
+      );
+    }
+
+    const sortApa ={};
+    if (sortOrder === 'asc'){
+      sortApa[fieldName]=1; //dia akan urutannya naik seperti a b c d duluan 
+    }else {
+      sortApa[fieldName]=-1; //kebalikannya yaitu turun urutannya 
+    }
+
+    users = await User.find({}).sort(sortApa);
+  } else {
+    users = await User.find({});
+  }
+  return users;
 }
 
 /**

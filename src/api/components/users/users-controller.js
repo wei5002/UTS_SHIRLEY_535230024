@@ -10,8 +10,37 @@ const { errorResponder, errorTypes } = require('../../../core/errors');
  */
 async function getUsers(request, response, next) {
   try {
-    const users = await usersService.getUsers();
-    return response.status(200).json(users);
+    let sortUsers = await usersService.getUsers(request.query.sort);
+    if(!sortUsers){
+      throw errorResponder(
+        errorTypes.UNPROCESSABLE_ENTITY,
+        'Unknow Users'
+      );
+    }
+
+    const sort = request.query.sort||null;
+    if(sort){
+      const [fieldName, sortOrder]= sort.split(':');
+      // split ini untuk kalau misalkan kita mau panggil si data nya, maka hanya memngetik namadata : namaorangnya
+
+      if(fieldName !== 'email' && fieldName !== 'name'){
+        throw errorResponder(
+          errorTypes.VALIDATION,
+          'Sort order yang dapat diisi hanya asc atau desc saja'
+        );
+      }
+
+      sortUsers.sort((a, b)=>{
+        if(sortOrder === 'asc'){
+          return a[fieldName].localeCompare(b[fieldName]);
+          //localeCompare untuk membandingkan antara nama a dengan nama b untuk nanti di urutkan 
+        } else if (sortOrder === 'desc'){
+          return b[fieldName].localeCompare(a[fieldName]);
+        }
+      });
+    }
+
+    return response.status(200).json(sortUsers);
   } catch (error) {
     return next(error);
   }
