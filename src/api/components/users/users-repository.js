@@ -1,16 +1,32 @@
+const { errorResponder, errorTypes } = require('../../../core/errors');
 const { User } = require('../../../models');
 
 /**
  * Get a list of users
  * @returns {Promise}
  */
-async function getUsers(sort) {
+async function getUsers(sort,search) {
   let users;
+
+  const query ={};
+  if(search){
+    const [searchFieldName, search_key]= search.split(':');
+
+    if(searchFieldName !== 'name' && searchFieldName !== 'email'){
+      throw new Error ('Field name hanya bisa dimasukkan "name" atau "email" saja')
+    }
+    query[searchFieldName]={
+      $regex : new RegExp (search_key, 'i') 
+      // RegExp untuk mencocokan teks pada pola tertentu
+      // i untuk smenjadikan case unsensitif (boleh huruf besar kecil ataupun apa pun itu)
+    };
+    users = await User.find(query);
+  }
 
   if (sort){
     const [fieldName, sortOrder]= sort.split(':');
 
-    if(fieldName !== 'email' && fieldName !== 'name'){
+    if(fieldName !== 'name' && fieldName !== 'email'){
       throw new Error (
         'Sort order yang dapat diisi hanya "asc" atau "desc" saja'
       );

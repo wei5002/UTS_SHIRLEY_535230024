@@ -17,13 +17,30 @@ async function getUsers(request, response, next) {
         'Unknow Users'
       );
     }
+    
+    const search = request.query.search||null;
+    if(search){
+      const[searchFieldName, search_key]= search.split(':');
+      // split ini untuk kalau misalkan kita mau panggil si data nya, maka hanya memngetik namadata : namaorangnya
+      
+      if (searchFieldName !== 'name' && searchFieldName!=='email'){
+        throw errorResponder(
+          errorTypes.VALIDATION,
+          'Field name harus diisikan dengan "name" atau "email" saja '
+        );
+      }
+
+      sortUsers = sortUsers.filter(user =>{ // filter untuk membuat array baru yang berisi elemen yang baru atau yang kita inginkan
+        return user [searchFieldName].includes(search_key);
+        // includes untuuk memeriksa apakah nama atau string yang di cari mengandung search_key, jika iya maka kana keluarkan hasil tersebut 
+      });
+    }
 
     const sort = request.query.sort||null;
     if(sort){
       const [fieldName, sortOrder]= sort.split(':');
-      // split ini untuk kalau misalkan kita mau panggil si data nya, maka hanya memngetik namadata : namaorangnya
 
-      if(fieldName !== 'email' && fieldName !== 'name'){
+      if(fieldName !== 'name' && fieldName !== 'email'){
         throw errorResponder(
           errorTypes.VALIDATION,
           'Sort order yang dapat diisi hanya asc atau desc saja'

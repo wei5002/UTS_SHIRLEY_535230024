@@ -5,18 +5,33 @@ const { hashPassword, passwordMatched } = require('../../../utils/password');
  * Get list of users
  * @returns {Array}
  */
-async function getUsers(sort) {
-  const sortUsers = await usersRepository.getUsers(sort);
+async function getUsers(sort, search) {
+  const users = await usersRepository.getUsers(sort);
+
+  if(search){
+    const [searchFieldName, search_key] = search.split(':');
+
+    if(searchFieldName !=='name' && searchFieldName !== 'email'){
+      throw new Error ('Field name hanya bisa dimasukkan "name" atau "email" saja');
+    }
+
+    const hasilSearch = users.filter(user=>{
+      const nilaiField = user[searchFieldName].toUpperCase();
+      const nilaiSearch = search_key.toUpperCase();
+      return nilaiField.includes(nilaiSearch);
+    });
+    users = hasilSearch;
+  }
 
   const results = [];
-  for (let i = 0; i < sortUsers.length; i += 1) {
-    const user = sortUsers[i];
-    results.push({
+  users.forEach(user=> {
+        results.push({
       id: user.id,
       name: user.name,
       email: user.email,
-    });
-  }
+  });
+});
+  
 
   return results;
 }
