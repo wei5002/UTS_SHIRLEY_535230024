@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon ./src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "migrate": "node ./migrations/20240324121101_create_default_users.js",
+    "migrate-users": "node ./migrations/20240324121101_create_default_users.js",
+    "migrate-banks": "node ./migrations/20240324121101_create_default_banks.js",
     "eslint": "eslint src/**"
   },
   "author": "Janson Hendryli",
