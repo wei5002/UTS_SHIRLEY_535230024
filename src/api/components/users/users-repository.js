@@ -3,6 +3,10 @@ const { User } = require('../../../models');
 
 /**
  * Get a list of users
+ * @param {string}  sort      - user sort 
+ * @param {string}  search    - user search 
+ * @param {string}  page_size - user page size
+ * @param {string}  page_number - user page number
  * @returns {Promise}
  */
 async function getUsers(sort,search, page_size, page_number) {

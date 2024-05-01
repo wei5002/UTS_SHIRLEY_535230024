@@ -3,6 +3,10 @@ const { hashPassword, passwordMatched } = require('../../../utils/password');
 
 /**
  * Get list of users
+ * @param {string} sort         - user sort 
+ * @param {string} search       - user search 
+ * @param {string} page_size    - user page size
+ * @param {string} page_number  - user page number
  * @returns {Array}
  */
 async function getUsers(sort, search, page_size, page_number) {
