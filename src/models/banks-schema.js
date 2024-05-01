@@ -1,7 +1,7 @@
 const banksSchema = {
   name: String,
   email: String,
-  pin: String,
+  password: String,
 };
 
 module.exports = banksSchema;

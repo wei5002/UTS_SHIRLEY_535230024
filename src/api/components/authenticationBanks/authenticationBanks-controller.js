@@ -1,5 +1,5 @@
 const { errorResponder, errorTypes } = require('../../../core/errors');
-const authenticationServices = require('./authentication-service');
+const authenticationServices = require('./authenticationBanks-service');
 
 const jumlahGagal ={ }; 
 // jumlahGagal --> untuk menampung berapa gagal yang bakal ada saat ketika kita login, 

@@ -1,20 +1,20 @@
-const usersService = require('./users-service');
+const banksService = require('./banks-service');
 const { errorResponder, errorTypes } = require('../../../core/errors');
 
 /**
- * Handle get list of users request
+ * Handle get list of banks request
  * @param {object} request - Express request object
  * @param {object} response - Express response object
  * @param {object} next - Express route middlewares
  * @returns {object} Response object or pass an error to the next route
  */
-async function getUsers(request, response, next) {
+async function getBanks(request, response, next) {
   try {
-    let sortUsers = await usersService.getUsers(request.query.sort);
-    if(!sortUsers){
+    let sortBanks = await banksService.getBanks(request.query.sort);
+    if(!sortBanks){
       throw errorResponder(
         errorTypes.UNPROCESSABLE_ENTITY,
-        'Unknow Users'
+        'Unknow Banks'
       );
     }
     
@@ -30,9 +30,9 @@ async function getUsers(request, response, next) {
         );
       }
 
-      sortUsers = sortUsers.filter(user =>{ // filter untuk membuat array baru yang berisi elemen yang baru atau yang kita inginkan
-        return user [searchFieldName].includes(search_key);
-        // includes untuuk memeriksa apakah nama atau string yang di cari mengandung search_key, jika iya maka kana keluarkan hasil tersebut 
+      sortBanks = sortBanks.filter(bank =>{ // filter untuk membuat array baru yang berisi elemen yang baru atau yang kita inginkan
+        return bank [searchFieldName].includes(search_key);
+        // includes untuk memeriksa apakah nama atau string yang di cari mengandung search_key, jika iya maka kana keluarkan hasil tersebut 
       });
     }
 
@@ -61,8 +61,8 @@ async function getUsers(request, response, next) {
       const page_size = parseInt (request.query.page_size) ||10;
       //parseInt = untuk mengubah string menjadi  bilangan integer
 
-      const total_users = sortUsers.length;
-      const total_page = Math.ceil(total_users/page_size);
+      const total_banks = sortBanks.length;
+      const total_page = Math.ceil(total_banks/page_size);
       //ceil buat pembulatan bilangan ke arah yang lebih besar seperti dari 4,2 jadi 5 page gitu.
 
       //jika page_numbernya tidak ada data atau <1, maka dia akan tetep memunculkan page 1
@@ -84,8 +84,8 @@ async function getUsers(request, response, next) {
       // jadi misalkan page_number =10 page_size =10, maka indeks akhir akanmenjadi 10.
       // jika page_number =2 maka indeks akhir adalah 20
 
-      // mengambil potongan dari sortUsers yang sudah di urutkan berdasarkan indeks awal hingga akhir
-      const hasil = sortUsers.slice (awalPengambilan, akhirPengambilan);
+      // mengambil potongan dari sortBanks yang sudah di urutkan berdasarkan indeks awal hingga akhir
+      const hasil = sortBanks.slice (awalPengambilan, akhirPengambilan);
 
       // jika masih terdapat page_number atau > 1 (2) maka hasilnya akan menjadi True, jika dia pas 1 maka hasilnya akan menjadi False
       const has_previous_page = page_number > 1;
@@ -110,34 +110,34 @@ async function getUsers(request, response, next) {
 }
 
 /**
- * Handle get user detail request
+ * Handle get bank detail request
  * @param {object} request - Express request object
  * @param {object} response - Express response object
  * @param {object} next - Express route middlewares
  * @returns {object} Response object or pass an error to the next route
  */
-async function getUser(request, response, next) {
+async function getBank(request, response, next) {
   try {
-    const user = await usersService.getUser(request.params.id);
+    const bank = await banksService.getBank (request.params.id);
 
-    if (!user) {
-      throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Unknown user');
+    if (!bank) {
+      throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 'Unknown bank');
     }
 
-    return response.status(200).json(user);
+    return response.status(200).json(bank);
   } catch (error) {
     return next(error);
   }
 }
 
 /**
- * Handle create user request
+ * Handle create bank request
  * @param {object} request - Express request object
  * @param {object} response - Express response object
  * @param {object} next - Express route middlewares
  * @returns {object} Response object or pass an error to the next route
  */
-async function createUser(request, response, next) {
+async function createBank(request, response, next) {
   try {
     const name = request.body.name;
     const email = request.body.email;
@@ -148,12 +148,12 @@ async function createUser(request, response, next) {
     if (password !== password_confirm) {
       throw errorResponder(
         errorTypes.INVALID_PASSWORD,
-        'Password confirmation mismatched'
+        'password confirmation mismatched'
       );
     }
 
     // Email must be unique
-    const emailIsRegistered = await usersService.emailIsRegistered(email);
+    const emailIsRegistered = await banksService.emailIsRegistered(email);
     if (emailIsRegistered) {
       throw errorResponder(
         errorTypes.EMAIL_ALREADY_TAKEN,
@@ -161,11 +161,11 @@ async function createUser(request, response, next) {
       );
     }
 
-    const success = await usersService.createUser(name, email, password);
+    const success = await banksService.createBank(name, email, password);
     if (!success) {
       throw errorResponder(
         errorTypes.UNPROCESSABLE_ENTITY,
-        'Failed to create user'
+        'Failed to create password'
       );
     }
 
@@ -176,20 +176,20 @@ async function createUser(request, response, next) {
 }
 
 /**
- * Handle update user request
+ * Handle update bank request
  * @param {object} request - Express request object
  * @param {object} response - Express response object
  * @param {object} next - Express route middlewares
  * @returns {object} Response object or pass an error to the next route
  */
-async function updateUser(request, response, next) {
+async function updateBank(request, response, next) {
   try {
     const id = request.params.id;
     const name = request.body.name;
     const email = request.body.email;
 
     // Email must be unique
-    const emailIsRegistered = await usersService.emailIsRegistered(email);
+    const emailIsRegistered = await banksService.emailIsRegistered(email);
     if (emailIsRegistered) {
       throw errorResponder(
         errorTypes.EMAIL_ALREADY_TAKEN,
@@ -197,11 +197,11 @@ async function updateUser(request, response, next) {
       );
     }
 
-    const success = await usersService.updateUser(id, name, email);
+    const success = await banksService.updateBank(id, name, email);
     if (!success) {
       throw errorResponder(
         errorTypes.UNPROCESSABLE_ENTITY,
-        'Failed to update user'
+        'Failed to update bank'
       );
     }
 
@@ -212,21 +212,21 @@ async function updateUser(request, response, next) {
 }
 
 /**
- * Handle delete user request
+ * Handle delete bank request
  * @param {object} request - Express request object
  * @param {object} response - Express response object
  * @param {object} next - Express route middlewares
  * @returns {object} Response object or pass an error to the next route
  */
-async function deleteUser(request, response, next) {
+async function deleteBank(request, response, next) {
   try {
     const id = request.params.id;
 
-    const success = await usersService.deleteUser(id);
+    const success = await banksService.deleteBank(id);
     if (!success) {
       throw errorResponder(
         errorTypes.UNPROCESSABLE_ENTITY,
-        'Failed to delete user'
+        'Failed to delete bank'
       );
     }
 
@@ -237,7 +237,7 @@ async function deleteUser(request, response, next) {
 }
 
 /**
- * Handle change user password request
+ * Handle change bank password request
  * @param {object} request - Express request object
  * @param {object} response - Express response object
  * @param {object} next - Express route middlewares
@@ -249,13 +249,13 @@ async function changePassword(request, response, next) {
     if (request.body.password_new !== request.body.password_confirm) {
       throw errorResponder(
         errorTypes.INVALID_PASSWORD,
-        'Password confirmation mismatched'
+        'password confirmation mismatched'
       );
     }
 
     // Check old password
     if (
-      !(await usersService.checkPassword(
+      !(await banksService.checkpassword(
         request.params.id,
         request.body.password_old
       ))
@@ -263,7 +263,7 @@ async function changePassword(request, response, next) {
       throw errorResponder(errorTypes.INVALID_CREDENTIALS, 'Wrong password');
     }
 
-    const changeSuccess = await usersService.changePassword(
+    const changeSuccess = await banksService.changePassword(
       request.params.id,
       request.body.password_new
     );
@@ -282,10 +282,10 @@ async function changePassword(request, response, next) {
 }
 
 module.exports = {
-  getUsers,
-  getUser,
-  createUser,
-  updateUser,
-  deleteUser,
+  getBanks,
+  getBank,
+  createBank,
+  updateBank,
+  deleteBank,
   changePassword,
 };

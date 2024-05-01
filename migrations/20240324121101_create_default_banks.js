@@ -1,10 +1,10 @@
 const logger = require('../src/core/logger')('api');
 const { Bank } = require('../src/models');
-const { hashPin } = require('../src/utils/pin');
+const { hashPassword } = require('../src/utils/password');
 
 const name = 'Administrator';
 const email = 'admin@example.com';
-const pin = '123456';
+const password = '123456';
 
 logger.info('Creating default banks');
 
@@ -19,11 +19,11 @@ logger.info('Creating default banks');
       throw new Error(`Bank ${email} already exists`);
     }
 
-    const hashedPin = await hashPin(pin);
+    const hashedPassword = await hashPassword(password);
     await Bank.create({
       name,
       email,
-      pin: hashedPin,
+      password: hashedPassword,
     });
   } catch (e) {
     logger.error(e);

@@ -1,45 +1,45 @@
 const express = require('express');
 
-const authenticationMiddleware = require('../../middlewares/authentication-middleware');
+const authenticationMiddleware = require('../../middlewares/authenticationBanks-middleware');
 const celebrate = require('../../../core/celebrate-wrappers');
-const usersControllers = require('./users-controller');
-const usersValidator = require('./users-validator');
+const banksControllers = require('./banks-controller');
+const banksValidator = require('./banks-validator');
 
 const route = express.Router();
 
 module.exports = (app) => {
-  app.use('/users', route);
+  app.use('/banks', route);
 
-  // Get list of users
-  route.get('/', authenticationMiddleware, usersControllers.getUsers);
+  // Get list of banks
+  route.get('/', authenticationMiddleware, banksControllers.getBanks);
 
-  // Create user
+  // Create bank
   route.post(
     '/',
     authenticationMiddleware,
-    celebrate(usersValidator.createUser),
-    usersControllers.createUser
+    celebrate(banksValidator.createBank),
+    banksControllers.createBank
   );
 
-  // Get user detail
-  route.get('/:id', authenticationMiddleware, usersControllers.getUser);
+  // Get bank detail
+  route.get('/:id', authenticationMiddleware, banksControllers.getBank);
 
-  // Update user
+  // Update bank
   route.put(
     '/:id',
     authenticationMiddleware,
-    celebrate(usersValidator.updateUser),
-    usersControllers.updateUser
+    celebrate(banksValidator.updateBank),
+    banksControllers.updateBank
   );
 
-  // Delete user
-  route.delete('/:id', authenticationMiddleware, usersControllers.deleteUser);
+  // Delete bank
+  route.delete('/:id', authenticationMiddleware, banksControllers.deleteBank);
 
   // Change password
   route.post(
     '/:id/change-password',
     authenticationMiddleware,
-    celebrate(usersValidator.changePassword),
-    usersControllers.changePassword
+    celebrate(banksValidator.changePassword),
+    banksControllers.changePassword
   );
 };

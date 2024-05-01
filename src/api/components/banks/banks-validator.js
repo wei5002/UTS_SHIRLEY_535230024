@@ -1,9 +1,11 @@
 const joi = require('joi');
 const { joiPasswordExtendCore } = require('joi-password');
+const { password } = require('../../../models/users-schema');
+const { changePassword } = require('../users/users-validator');
 const joiPassword = joi.extend(joiPasswordExtendCore);
 
 module.exports = {
-  createUser: {
+  createBank: {
     body: {
       name: joi.string().min(1).max(100).required().label('Name'),
       email: joi.string().email().required().label('Email'),
@@ -23,7 +25,7 @@ module.exports = {
     },
   },
 
-  updateUser: {
+  updateBank: {
     body: {
       name: joi.string().min(1).max(100).required().label('Name'),
       email: joi.string().email().required().label('Email'),
@@ -45,7 +47,7 @@ module.exports = {
         .max(32)
         .required()
         .label('New password'),
-      password_confirm: joi.string().required().label('Password confirmation'),
+        password_confirm: joi.string().required().label('Password confirmation'),
     },
   },
 };

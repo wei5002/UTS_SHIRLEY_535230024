@@ -1,14 +1,14 @@
-const { User } = require('../../../models');
+const { Bank } = require('../../../models');
 
 /**
- * Get user by email for login information
+ * Get bank by email for login information
  * @param {string} email - Email
  * @returns {Promise}
  */
-async function getUserByEmail(email) {
-  return User.findOne({ email });
+async function getBankByEmail(email) {
+  return Bank.findOne({ email });
 }
 
 module.exports = {
-  getUserByEmail,
+  getBankByEmail,
 };

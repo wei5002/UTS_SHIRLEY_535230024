@@ -1,32 +1,32 @@
-const authenticationRepository = require('./authentication-repository');
+const authenticationRepository = require('./authenticationBanks-repository');
 const { generateToken } = require('../../../utils/session-token');
 const { passwordMatched } = require('../../../utils/password');
 
 /**
  * Check username and password for login.
  * @param {string} email - Email
- * @param {string} password - Password
+ * @param {string} password - password
  * @returns {object} An object containing, among others, the JWT token if the email and password are matched. Otherwise returns null.
  */
 async function checkLoginCredentials(email, password) {
-  const user = await authenticationRepository.getUserByEmail(email);
+  const bank = await authenticationRepository.getBankByEmail(email);
 
-  // We define default user password here as '<RANDOM_PASSWORD_FILTER>'
-  // to handle the case when the user login is invalid. We still want to
+  // We define default bank password here as '<RANDOM_PASSWORD_FILTER>'
+  // to handle the case when the bank login is invalid. We still want to
   // check the password anyway, so that it prevents the attacker in
   // guessing login credentials by looking at the processing time.
-  const userPassword = user ? user.password : '<RANDOM_PASSWORD_FILLER>';
-  const passwordChecked = await passwordMatched(password, userPassword);
+  const bankPassword= bank ? bank.password : '<RANDOM_PASSWORD_FILLER>';
+  const passwordChecked = await passwordMatched(password, bankPassword);
 
   // Because we always check the password (see above comment), we define the
-  // login attempt as successful when the `user` is found (by email) and
+  // login attempt as successful when the `bank` is found (by email) and
   // the password matches.
-  if (user && passwordChecked) {
+  if (bank && passwordChecked) {
     return {
-      email: user.email,
-      name: user.name,
-      user_id: user.id,
-      token: generateToken(user.email, user.id),
+      email: bank.email,
+      name: bank.name,
+      bank_id: bank.id,
+      token: generateToken(bank.email, bank.id),
     };
   }
 

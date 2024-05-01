@@ -1,16 +1,16 @@
-const usersRepository = require('./users-repository');
+const banksRepository = require('./banks-repository');
 const { hashPassword, passwordMatched } = require('../../../utils/password');
 
 /**
- * Get list of users
- * @param {string} sort         - user sort 
- * @param {string} search       - user search 
- * @param {string} page_size    - user page size
- * @param {string} page_number  - user page number
+ * Get list of banks
+ * @param {string} sort         - bank sort 
+ * @param {string} search       - bank search 
+ * @param {string} page_size    - bank page size
+ * @param {string} page_number  - bank page number
  * @returns {Array}
  */
-async function getUsers(sort, search, page_size, page_number) {
-  const users = await usersRepository.getUsers(sort);
+async function getBanks(sort, search, page_size, page_number) {
+  const banks = await banksRepository.getBanks(sort);
 
   if(search){
     const [searchFieldName, search_key] = search.split(':');
@@ -19,14 +19,14 @@ async function getUsers(sort, search, page_size, page_number) {
       throw new Error ('Field name hanya bisa dimasukkan "name" atau "email" saja');
     }
 
-    const hasilSearch = users.filter(user=>{ //membuat array baru dengan filter
-      const nilaiField = user[searchFieldName].toUpperCase();
+    const hasilSearch = banks.filter(bank=>{ //membuat array baru dengan filter
+      const nilaiField = bank[searchFieldName].toUpperCase();
       // toUpperCase untuk mengonversi kedua nilai menjadi huruf besar 
       const nilaiSearch = search_key.toUpperCase();
       return nilaiField.includes(nilaiSearch);
       // includes biar tidak menjadi case sensitive(unsensitif)
     });
-    users = hasilSearch;
+    banks = hasilSearch;
   }
 
   if(page_size && page_number){
@@ -42,16 +42,16 @@ async function getUsers(sort, search, page_size, page_number) {
     // menghitung indeks akhir dari potongan data yang akan diambil
     const akhirArray = page_number*page_size;
 
-    users=users.slice(awalArray,akhirArray);
-    // mengambil data dari pengguna users mulai dari indeks awalArray hingga sebelum akhirarray
+    banks=banks.slice(awalArray,akhirArray);
+    // mengambil data dari pengguna banks mulai dari indeks awalArray hingga sebelum akhirarray
   }
 
   const results = [];
-  users.forEach(user=> {
+  banks.forEach(bank=> {
         results.push({
-      id: user.id,
-      name: user.name,
-      email: user.email,
+      id: bank.id,
+      name: bank.name,
+      email: bank.email,
   });
 });
   
@@ -60,38 +60,38 @@ async function getUsers(sort, search, page_size, page_number) {
 }
 
 /**
- * Get user detail
- * @param {string} id - User ID
+ * Get bank detail
+ * @param {string} id - Bank ID
  * @returns {Object}
  */
-async function getUser(id) {
-  const user = await usersRepository.getUser(id);
+async function getBank(id) {
+  const bank = await banksRepository.getBank(id);
 
-  // User not found
-  if (!user) {
+  // Bank not found
+  if (!bank) {
     return null;
   }
 
   return {
-    id: user.id,
-    name: user.name,
-    email: user.email,
+    id: bank.id,
+    name: bank.name,
+    email: bank.email,
   };
 }
 
 /**
- * Create new user
+ * Create new bank
  * @param {string} name - Name
  * @param {string} email - Email
- * @param {string} password - Password
+ * @param {string} password - password
  * @returns {boolean}
  */
-async function createUser(name, email, password) {
+async function createBank(name, email, password) {
   // Hash password
   const hashedPassword = await hashPassword(password);
 
   try {
-    await usersRepository.createUser(name, email, hashedPassword);
+    await banksRepository.createBank(name, email, hashedPassword);
   } catch (err) {
     return null;
   }
@@ -100,22 +100,22 @@ async function createUser(name, email, password) {
 }
 
 /**
- * Update existing user
- * @param {string} id - User ID
+ * Update existing bank
+ * @param {string} id - Bank ID
  * @param {string} name - Name
  * @param {string} email - Email
  * @returns {boolean}
  */
-async function updateUser(id, name, email) {
-  const user = await usersRepository.getUser(id);
+async function updateBank(id, name, email) {
+  const bank = await banksRepository.getBank(id);
 
-  // User not found
-  if (!user) {
+  // Bank not found
+  if (!bank) {
     return null;
   }
 
   try {
-    await usersRepository.updateUser(id, name, email);
+    await banksRepository.updateBank(id, name, email);
   } catch (err) {
     return null;
   }
@@ -124,20 +124,20 @@ async function updateUser(id, name, email) {
 }
 
 /**
- * Delete user
- * @param {string} id - User ID
+ * Delete bank
+ * @param {string} id - Bank ID
  * @returns {boolean}
  */
-async function deleteUser(id) {
-  const user = await usersRepository.getUser(id);
+async function deleteBank(id) {
+  const bank = await banksRepository.getBank(id);
 
-  // User not found
-  if (!user) {
+  // Bank not found
+  if (!bank) {
     return null;
   }
 
   try {
-    await usersRepository.deleteUser(id);
+    await banksRepository.deleteBank(id);
   } catch (err) {
     return null;
   }
@@ -151,9 +151,9 @@ async function deleteUser(id) {
  * @returns {boolean}
  */
 async function emailIsRegistered(email) {
-  const user = await usersRepository.getUserByEmail(email);
+  const bank = await banksRepository.getBankByEmail(email);
 
-  if (user) {
+  if (bank) {
     return true;
   }
 
@@ -162,33 +162,33 @@ async function emailIsRegistered(email) {
 
 /**
  * Check whether the password is correct
- * @param {string} userId - User ID
- * @param {string} password - Password
+ * @param {string} bankId - Bank ID
+ * @param {string} password - password
  * @returns {boolean}
  */
-async function checkPassword(userId, password) {
-  const user = await usersRepository.getUser(userId);
-  return passwordMatched(password, user.password);
+async function checkPassword(bankId, password) {
+  const bank = await banksRepository.getBank(bankId);
+  return passwordMatched(password, bank.password);
 }
 
 /**
- * Change user password
- * @param {string} userId - User ID
+ * Change bank password
+ * @param {string} bankId - bank ID
  * @param {string} password - Password
  * @returns {boolean}
  */
-async function changePassword(userId, password) {
-  const user = await usersRepository.getUser(userId);
+async function changePassword(bankId, password) {
+  const bank = await banksRepository.getBank(bankId);
 
-  // Check if user not found
-  if (!user) {
+  // Check if bank not found
+  if (!bank) {
     return null;
   }
 
   const hashedPassword = await hashPassword(password);
 
-  const changeSuccess = await usersRepository.changePassword(
-    userId,
+  const changeSuccess = await banksRepository.changePassword(
+    bankId,
     hashedPassword
   );
 
@@ -200,11 +200,11 @@ async function changePassword(userId, password) {
 }
 
 module.exports = {
-  getUsers,
-  getUser,
-  createUser,
-  updateUser,
-  deleteUser,
+  getBanks,
+  getBank,
+  createBank,
+  updateBank,
+  deleteBank,
   emailIsRegistered,
   checkPassword,
   changePassword,
