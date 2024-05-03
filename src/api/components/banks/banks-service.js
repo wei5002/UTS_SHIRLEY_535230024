@@ -15,6 +15,7 @@ async function getBanks() {
     results.push({
       id: bank.id,
       name: bank.name,
+      noPhone: bank.noPhone,
       email: bank.email,
       address: bank.address,
   });
@@ -38,6 +39,7 @@ async function getBank(id) {
   return {
     id: bank.id,
     name: bank.name,
+    noPhone: bank.noPhone,
     email: bank.email,
     address: bank.address,
   };
@@ -46,17 +48,18 @@ async function getBank(id) {
 /**
  * Create new bank
  * @param {string} name - Name
+ * @param {string} noPhone -nomor telepon
  * @param {string} email - Email
  * @param {string} address -address
  * @param {string} password - password
  * @returns {boolean}
  */
-async function createBank(name, email, address, password) {
+async function createBank(name, noPhone, email, address, password) {
   // Hash password
   const hashedPassword = await hashPassword(password);
 
   try {
-    await banksRepository.createBank(name, email, address, hashedPassword);
+    await banksRepository.createBank(name, noPhone, email, address, hashedPassword);
   } catch (err) {
     return null;
   }

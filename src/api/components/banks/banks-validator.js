@@ -8,6 +8,7 @@ module.exports = {
   createBank: {
     body: {
       name: joi.string().min(1).max(100).required().label('Name'),
+      noPhone: joi.string().min(11).max(13).required().label('Nomor Telepon'),
       email: joi.string().email().required().label('Email'),
       address: joi.string().required().label('Address'),
       password: joiPassword
@@ -29,6 +30,7 @@ module.exports = {
   updateBank: {
     body: {
       name: joi.string().min(1).max(100).required().label('Name'),
+      noPhone: joi.string().required().label('Nomor Telepon'),
       email: joi.string().email().required().label('Email'),
       address: joi.string().required().label('Address'),
     },

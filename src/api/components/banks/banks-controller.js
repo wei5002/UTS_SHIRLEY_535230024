@@ -50,6 +50,7 @@ async function getBank(request, response, next) {
 async function createBank(request, response, next) {
   try {
     const name = request.body.name;
+    const noPhone = request.body.noPhone;
     const email = request.body.email;
     const address = request.body.address;
     const password = request.body.password;
@@ -73,7 +74,7 @@ async function createBank(request, response, next) {
       );
     }
 
-    const success = await banksService.createBank(name, email, address, password);
+    const success = await banksService.createBank(name, noPhone, email, address, password);
     if (!success) {
       throw errorResponder(
         errorTypes.UNPROCESSABLE_ENTITY,
@@ -81,7 +82,7 @@ async function createBank(request, response, next) {
       );
     }
 
-    return response.status(200).json({ name, email, address });
+    return response.status(200).json({ name, noPhone, email, address });
   } catch (error) {
     return next(error);
   }
@@ -98,6 +99,7 @@ async function updateBank(request, response, next) {
   try {
     const id = request.params.id;
     const name = request.body.name;
+    const noPhone = request.body.noPhone;
     const email = request.body.email;
 
     // Email must be unique
@@ -109,7 +111,7 @@ async function updateBank(request, response, next) {
       );
     }
 
-    const success = await banksService.updateBank(id, name, email);
+    const success = await banksService.updateBank(id, name, noPhone, email);
     if (!success) {
       throw errorResponder(
         errorTypes.UNPROCESSABLE_ENTITY,

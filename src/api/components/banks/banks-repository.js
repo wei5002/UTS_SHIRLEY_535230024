@@ -22,14 +22,16 @@ async function getBank(id) {
 /**
  * Create new bank
  * @param {string} name - Name
+ * @param {string} noPhone - nomor telepon
  * @param {string} email - Email
  * @param {string} address - address
  * @param {string} password - Hashed password
  * @returns {Promise}
  */
-async function createBank(name, email, address, password) {
+async function createBank(name, noPhone, email, address, password) {
   return Bank.create({
     name,
+    noPhone,
     email,
     address,
     password,
@@ -45,7 +47,7 @@ async function createBank(name, email, address, password) {
  * @param {string} address- address
  * @returns {Promise}
  */
-async function updateBank(id, name, email, address) {
+async function updateBank(id, name, noPhone, email, address) {
   return Bank.updateOne(
     {
       _id: id,
@@ -53,6 +55,7 @@ async function updateBank(id, name, email, address) {
     {
       $set: {
         name,
+        noPhone,
         email,
         address,
       },
