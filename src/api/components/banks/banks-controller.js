@@ -60,6 +60,7 @@ async function createBank(request, response, next) {
     const password = request.body.password;
     const password_confirm = request.body.password_confirm;
 
+    // jika customer tidak menuliskan sesuai dengan yang di opsi, maka akan muncul error 
     if(jenisKelamin !== "P"  && jenisKelamin !== "L"){
       throw errorResponder(
         errorTypes.VALIDATION,
@@ -84,6 +85,7 @@ async function createBank(request, response, next) {
       );
     }
 
+    // membuat nomor rekeningg 
     const nomorRekening = await banksService.getRekening()
 
     const success = await banksService.createBank(
@@ -120,16 +122,8 @@ async function updateBank(request, response, next) {
   try {
     const id = request.params.id;
     const name = request.body.name;
-    const jenisKelamin = request.body.jenisKelamin;
     const noPhone = request.body.noPhone;
     const email = request.body.email;
-
-    if (jenisKelamin !== "P" && jenisKelamin !== "L"){
-      throw errorResponder(
-        errorTypes.VALIDATION,
-        'Pilihlah jenis kelamin (P/L), P = Perempuan dan L = laki-laki'
-      )
-    }
 
     // Email must be unique
     const emailIsRegistered = await banksService.emailIsRegistered(email);
@@ -139,10 +133,8 @@ async function updateBank(request, response, next) {
         'Email is already registered'
       );
     }
-    
-    const nomorRekening = await banksService.getRekening()
 
-    const success = await banksService.updateBank(id, nomorRekening, name, jenisKelamin, noPhone, email);
+    const success = await banksService.updateBank(id, name, noPhone, email);
     if (!success) {
       throw errorResponder(
         errorTypes.UNPROCESSABLE_ENTITY,

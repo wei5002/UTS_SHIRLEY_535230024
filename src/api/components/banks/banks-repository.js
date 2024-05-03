@@ -47,13 +47,13 @@ async function createBank(nomorRekening, noKTP, name, jenisKelamin, noPhone, ema
 
 /**
  * Update existing bank
- * @param {string} id - Bank ID
- * @param {string} name - Name
- * @param {string} email - Email
- * @param {string} address- address
+ * @param {string} id         - Bank ID
+ * @param {string} name       - Name
+ * @param {string} email      - Email
+ * @param {string} address    - address
  * @returns {Promise}
  */
-async function updateBank(id, name, jenisKelamin, noPhone, email, address) {
+async function updateBank(id, name, noPhone, email, address) {
   return Bank.updateOne(
     {
       _id: id,
@@ -61,7 +61,6 @@ async function updateBank(id, name, jenisKelamin, noPhone, email, address) {
     {
       $set: {
         name,
-        jenisKelamin,
         noPhone,
         email,
         address,

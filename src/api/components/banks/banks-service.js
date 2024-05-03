@@ -78,14 +78,13 @@ async function createBank(nomorRekening, noKTP, name, jenisKelamin, noPhone, ema
 
 /**
  * Update existing bank
- * @param {string} id - Bank ID
- * @param {string} name - Name
- * @param {string} jenisKelamin - jenis kelamin
- * @param {string} email - Email
- * @param {string} address - address
+ * @param {string} id           - Bank ID
+ * @param {string} name         - Name
+ * @param {string} email        - Email
+ * @param {string} address      - address
  * @returns {boolean}
  */
-async function updateBank(id, name, jenisKelamin, email, address) {
+async function updateBank(id, name, email, address) {
   const bank = await banksRepository.getBank(id);
 
   // Bank not found
@@ -94,7 +93,7 @@ async function updateBank(id, name, jenisKelamin, email, address) {
   }
 
   try {
-    await banksRepository.updateBank(id, name, jenisKelamin, email, address);
+    await banksRepository.updateBank(id, name, email, address);
   } catch (err) {
     return null;
   }
@@ -178,6 +177,7 @@ async function changePassword(bankId, password) {
   return true;
 }
 
+//merupakan fungsi yang digunakan untukk membuat angka secara random dengan jumlah 10 yang digunakan sebagai nomor rekening customer
 async function getRekening(){
   try{
     const randomNumber = Math.floor(1000000000 + Math.random()*9000000000);
