@@ -50,11 +50,19 @@ async function getBank(request, response, next) {
 async function createBank(request, response, next) {
   try {
     const name = request.body.name;
+    const jenisKelamin = request.body.jenisKelamin;
     const noPhone = request.body.noPhone;
     const email = request.body.email;
     const address = request.body.address;
     const password = request.body.password;
     const password_confirm = request.body.password_confirm;
+
+    if(jenisKelamin !== "P"  && jenisKelamin !== "L"){
+      throw errorResponder(
+        errorTypes.VALIDATION,
+        'Pilihlah jenis kelamin (P/L), Jenis kelamin "P" (Perempuan) dan "L" (Laki-laki).'
+      );
+    }
 
     // Check confirmation password
     if (password !== password_confirm) {
@@ -75,6 +83,7 @@ async function createBank(request, response, next) {
 
     const success = await banksService.createBank(
       name,
+      jenisKelamin,
       noPhone,
       email,
       address,
@@ -87,7 +96,7 @@ async function createBank(request, response, next) {
       );
     }
 
-    return response.status(200).json({ name, noPhone, email, address });
+    return response.status(200).json({ name,jenisKelamin, noPhone, email, address });
   } catch (error) {
     return next(error);
   }
@@ -104,8 +113,16 @@ async function updateBank(request, response, next) {
   try {
     const id = request.params.id;
     const name = request.body.name;
+    const jenisKelamin = request.body.jenisKelamin;
     const noPhone = request.body.noPhone;
     const email = request.body.email;
+
+    if (jenisKelamin !== "P" && jenisKelamin !== "L"){
+      throw errorResponder(
+        errorTypes.VALIDATION,
+        'Pilihlah jenis kelamin (P/L), P = Perempuan dan L = laki-laki'
+      )
+    }
 
     // Email must be unique
     const emailIsRegistered = await banksService.emailIsRegistered(email);
@@ -116,7 +133,7 @@ async function updateBank(request, response, next) {
       );
     }
 
-    const success = await banksService.updateBank(id, name, noPhone, email);
+    const success = await banksService.updateBank(id, name, jenisKelamin, noPhone, email);
     if (!success) {
       throw errorResponder(
         errorTypes.UNPROCESSABLE_ENTITY,
