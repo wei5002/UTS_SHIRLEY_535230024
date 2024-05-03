@@ -10,7 +10,7 @@ const { errorResponder, errorTypes } = require('../../../core/errors');
  */
 async function getBanks(request, response, next) {
   try {
-   const banks = await banksService.getBanks();
+    const banks = await banksService.getBanks();
 
     return response.status(200).json(banks);
   } catch (error) {
@@ -27,7 +27,7 @@ async function getBanks(request, response, next) {
  */
 async function getBank(request, response, next) {
   try {
-    const bank = await banksService.getBank (request.params.id);
+    const bank = await banksService.getBank(request.params.id);
 
     if (!bank) {
       throw errorResponder(errorTypes.UNPROCESSABLE_ENTITY, 
@@ -56,7 +56,6 @@ async function createBank(request, response, next) {
     const password = request.body.password;
     const password_confirm = request.body.password_confirm;
 
-
     // Check confirmation password
     if (password !== password_confirm) {
       throw errorResponder(
@@ -74,7 +73,13 @@ async function createBank(request, response, next) {
       );
     }
 
-    const success = await banksService.createBank(name, noPhone, email, address, password);
+    const success = await banksService.createBank(
+      name,
+      noPhone,
+      email,
+      address,
+      password
+    );
     if (!success) {
       throw errorResponder(
         errorTypes.UNPROCESSABLE_ENTITY,
