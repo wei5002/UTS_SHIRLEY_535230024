@@ -22,6 +22,7 @@ async function getBank(id) {
 /**
  * Create new bank
  * @param {string} nomorRekening  - Nomor Rekening
+ * @param {string} noKTP          - Nomor KTP
  * @param {string} name           - Name
  * @param {string} jenisKelamin   - jenis kelamin
  * @param {string} noPhone        - nomor telepon
@@ -30,9 +31,10 @@ async function getBank(id) {
  * @param {string} password       - Hash  ed password
  * @returns {Promise}
  */
-async function createBank(nomorRekening, name, jenisKelamin, noPhone, email, address, password) {
+async function createBank(nomorRekening, noKTP, name, jenisKelamin, noPhone, email, address, password) {
   return Bank.create({
     nomorRekening,
+    noKTP,
     name,
     jenisKelamin,
     noPhone,

@@ -50,6 +50,7 @@ async function getBank(request, response, next) {
 async function createBank(request, response, next) {
   try {
     const name = request.body.name;
+    const noKTP = request.body.noKTP;
     const jenisKelamin = request.body.jenisKelamin;
     const noPhone = request.body.noPhone;
     const email = request.body.email;
@@ -85,6 +86,7 @@ async function createBank(request, response, next) {
 
     const success = await banksService.createBank(
       nomorRekening,
+      noKTP,
       name,
       jenisKelamin,
       noPhone,
@@ -99,7 +101,7 @@ async function createBank(request, response, next) {
       );
     }
 
-    return response.status(200).json({ nomorRekening, name, jenisKelamin, noPhone, email, address });
+    return response.status(200).json({ nomorRekening, noKTP, name, jenisKelamin, noPhone, email, address });
   } catch (error) {
     return next(error);
   }

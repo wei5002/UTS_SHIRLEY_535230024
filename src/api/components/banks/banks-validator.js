@@ -7,6 +7,7 @@ const joiPassword = joi.extend(joiPasswordExtendCore);
 module.exports = {
   createBank: {
     body: {
+      noKTP: joi.string().min(16).max(16).required().label('Nomor KTP'),
       name: joi.string().min(1).max(100).required().label('Name'),
       jenisKelamin: joi.string().required().label('Jenis Kelamin (P/L)'),
       noPhone: joi.string().min(11).max(13).required().label('Nomor Telepon'),
