@@ -49,8 +49,10 @@ async function getBank(request, response, next) {
  */
 async function createBank(request, response, next) {
   try {
-    const name = request.body.name;
-    const noKTP = request.body.noKTP;
+    // karena biasanya ketika kita ingin membuat sebuah rekening di bank, pastinya akan di mintakan data-data
+    // berupa nama, nomor ktp, jenis kelamin, nomor telepon, dan sebagainya.
+    const noKTP= request.body.noKTP;
+    const name = request.body.name;  
     const jenisKelamin = request.body.jenisKelamin;
     const noPhone = request.body.noPhone;
     const email = request.body.email;
