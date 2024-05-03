@@ -1,7 +1,7 @@
 const joi = require('joi');
 const { joiPasswordExtendCore } = require('joi-password');
-const { password } = require('../../../models/users-schema');
-const { changePassword } = require('../users/users-validator');
+const { password } = require('../../../models/banks-schema');
+const { changePassword } = require('../banks/banks-validator');
 const joiPassword = joi.extend(joiPasswordExtendCore);
 
 module.exports = {
