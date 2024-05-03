@@ -81,13 +81,16 @@ async function createBank(request, response, next) {
       );
     }
 
+    const nomorRekening = await banksService.getRekening()
+
     const success = await banksService.createBank(
+      nomorRekening,
       name,
       jenisKelamin,
       noPhone,
       email,
       address,
-      password
+      password,
     );
     if (!success) {
       throw errorResponder(
@@ -96,7 +99,7 @@ async function createBank(request, response, next) {
       );
     }
 
-    return response.status(200).json({ name,jenisKelamin, noPhone, email, address });
+    return response.status(200).json({ nomorRekening, name, jenisKelamin, noPhone, email, address });
   } catch (error) {
     return next(error);
   }
@@ -132,8 +135,10 @@ async function updateBank(request, response, next) {
         'Email is already registered'
       );
     }
+    
+    const nomorRekening = await banksService.getRekening()
 
-    const success = await banksService.updateBank(id, name, jenisKelamin, noPhone, email);
+    const success = await banksService.updateBank(id, nomorRekening, name, jenisKelamin, noPhone, email);
     if (!success) {
       throw errorResponder(
         errorTypes.UNPROCESSABLE_ENTITY,

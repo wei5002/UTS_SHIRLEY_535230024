@@ -14,6 +14,7 @@ async function getBanks() {
     const bank = banks[i];
     results.push({
       id: bank.id,
+      nomorRekening: bank.nomorRekening,
       name: bank.name,
       jenisKelamin: bank.jenisKelamin,
       noPhone: bank.noPhone,
@@ -39,6 +40,7 @@ async function getBank(id) {
 
   return {
     id: bank.id,
+    nomorRekening: bank.nomorRekening,
     name: bank.name,
     jenisKelamin: bank.jenisKelamin,
     noPhone: bank.noPhone,
@@ -49,6 +51,7 @@ async function getBank(id) {
 
 /**
  * Create new bank
+ * @param {string} nomorRekening -Nomor rekening
  * @param {string} name - Name
  * @param {string} jenisKelamin -jenis kelamin
  * @param {string} noPhone -nomor telepon
@@ -57,12 +60,12 @@ async function getBank(id) {
  * @param {string} password - password
  * @returns {boolean}
  */
-async function createBank(name, jenisKelamin, noPhone, email, address, password) {
+async function createBank(nomorRekening, name, jenisKelamin, noPhone, email, address, password) {
   // Hash password
   const hashedPassword = await hashPassword(password);
 
   try {
-    await banksRepository.createBank(name, jenisKelamin, noPhone, email, address, hashedPassword);
+    await banksRepository.createBank(nomorRekening, name, jenisKelamin, noPhone, email, address, hashedPassword);
   } catch (err) {
     return null;
   }
@@ -172,6 +175,17 @@ async function changePassword(bankId, password) {
   return true;
 }
 
+async function getRekening(){
+  try{
+    const randomNumber = Math.floor(1000000000 + Math.random()*9000000000);
+    const nomorRekening = randomNumber.toString();
+
+    return nomorRekening;
+  } catch(error){
+    throw new Error ('Perbuatan nomor rekening tidak berhasil')
+  }
+}
+
 module.exports = {
   getBanks,
   getBank,
@@ -181,4 +195,5 @@ module.exports = {
   emailIsRegistered,
   checkPassword,
   changePassword,
+  getRekening,
 };

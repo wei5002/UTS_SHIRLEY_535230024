@@ -1,4 +1,7 @@
+const { required } = require("joi");
+
 const banksSchema = {
+  nomorRekening :{type: String, required: true},
   name: String,
   jenisKelamin: String,
   noPhone: String,
