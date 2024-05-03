@@ -51,8 +51,10 @@ async function createBank(request, response, next) {
   try {
     const name = request.body.name;
     const email = request.body.email;
+    const address = request.body.address;
     const password = request.body.password;
     const password_confirm = request.body.password_confirm;
+
 
     // Check confirmation password
     if (password !== password_confirm) {
@@ -71,7 +73,7 @@ async function createBank(request, response, next) {
       );
     }
 
-    const success = await banksService.createBank(name, email, password);
+    const success = await banksService.createBank(name, email, address, password);
     if (!success) {
       throw errorResponder(
         errorTypes.UNPROCESSABLE_ENTITY,
@@ -79,7 +81,7 @@ async function createBank(request, response, next) {
       );
     }
 
-    return response.status(200).json({ name, email });
+    return response.status(200).json({ name, email, address });
   } catch (error) {
     return next(error);
   }

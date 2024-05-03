@@ -1,6 +1,6 @@
 const joi = require('joi');
 const { joiPasswordExtendCore } = require('joi-password');
-const { password } = require('../../../models/banks-schema');
+const { password, address } = require('../../../models/banks-schema');
 const { changePassword } = require('../banks/banks-validator');
 const joiPassword = joi.extend(joiPasswordExtendCore);
 
@@ -9,6 +9,7 @@ module.exports = {
     body: {
       name: joi.string().min(1).max(100).required().label('Name'),
       email: joi.string().email().required().label('Email'),
+      address: joi.string().required().label('Address'),
       password: joiPassword
         .string()
         .minOfSpecialCharacters(1)
@@ -29,6 +30,7 @@ module.exports = {
     body: {
       name: joi.string().min(1).max(100).required().label('Name'),
       email: joi.string().email().required().label('Email'),
+      address: joi.string().required().label('Address'),
     },
   },
 

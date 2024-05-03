@@ -1,5 +1,6 @@
 const banksRepository = require('./banks-repository');
 const { hashPassword, passwordMatched } = require('../../../utils/password');
+const { address } = require('../../../models/banks-schema');
 
 /**
  * Get list of banks
@@ -15,6 +16,7 @@ async function getBanks() {
       id: bank.id,
       name: bank.name,
       email: bank.email,
+      address: bank.address,
   });
 }
   return results;
@@ -37,6 +39,7 @@ async function getBank(id) {
     id: bank.id,
     name: bank.name,
     email: bank.email,
+    address: bank.address,
   };
 }
 
@@ -44,15 +47,16 @@ async function getBank(id) {
  * Create new bank
  * @param {string} name - Name
  * @param {string} email - Email
+ * @param {string} address -address
  * @param {string} password - password
  * @returns {boolean}
  */
-async function createBank(name, email, password) {
+async function createBank(name, email, address, password) {
   // Hash password
   const hashedPassword = await hashPassword(password);
 
   try {
-    await banksRepository.createBank(name, email, hashedPassword);
+    await banksRepository.createBank(name, email, address, hashedPassword);
   } catch (err) {
     return null;
   }
@@ -65,9 +69,10 @@ async function createBank(name, email, password) {
  * @param {string} id - Bank ID
  * @param {string} name - Name
  * @param {string} email - Email
+ * @param {string} address - address
  * @returns {boolean}
  */
-async function updateBank(id, name, email) {
+async function updateBank(id, name, email, address) {
   const bank = await banksRepository.getBank(id);
 
   // Bank not found
@@ -76,7 +81,7 @@ async function updateBank(id, name, email) {
   }
 
   try {
-    await banksRepository.updateBank(id, name, email);
+    await banksRepository.updateBank(id, name, email, address);
   } catch (err) {
     return null;
   }
