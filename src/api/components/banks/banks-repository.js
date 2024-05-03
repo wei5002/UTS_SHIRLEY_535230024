@@ -1,11 +1,65 @@
+const { errorResponder, errorTypes } = require('../../../core/errors');
 const { Bank } = require('../../../models');
+// const { changePassword } = require('./banks-controller');
 
 /**
  * Get a list of banks
+ * @param {string}  sort      - banks sort 
+ * @param {string}  search    - banks search 
+ * @param {string}  page_size - banks page size
+ * @param {string}  page_number - banks page number
  * @returns {Promise}
  */
-async function getBanks() {
-  return Bank.find({});
+async function getBanks(sort,search, page_size, page_number) {
+  let banks;
+
+  const query ={};
+  if(search){
+    const [searchFieldName, search_key]= search.split(':');
+
+    if(searchFieldName !== 'name' && searchFieldName !== 'email'){
+      throw new Error ('Field name hanya bisa dimasukkan "name" atau "email" saja')
+    }
+    query[searchFieldName]={
+      $regex : new RegExp (search_key, 'i') 
+      // RegExp untuk mencocokan teks pada pola tertentu
+      // i untuk smenjadikan case unsensitif (boleh huruf besar kecil ataupun apa pun itu)
+    };
+    banks = await Bank.find(query);
+  }
+
+  if (sort){
+    const [fieldName, sortOrder]= sort.split(':');
+
+    if(fieldName !== 'name' && fieldName !== 'email'){
+      throw new Error (
+        'Sort order yang dapat diisi hanya "asc" atau "desc" saja'
+      );
+    }
+
+    const sortApa ={};
+    if (sortOrder === 'asc'){
+      sortApa[fieldName]=1; //dia akan urutannya naik seperti a b c d duluan 
+    }else {
+      sortApa[fieldName]=-1; //kebalikannya yaitu turun urutannya 
+    }
+
+    banks = await Bank.find(query).sort(sortApa);
+  } else {
+    banks = await Bank.find(query);
+  }
+
+  // memeriksa page_size sama page_number sudah ada belum atau valid belum
+  if(page_size && page_number){             
+    const pass = (page_number-1)*page_size;   //menghitung indeks awal
+    banks= banks.slice(pass,pass+page_size);
+
+    if(banks.length ===0 && pass>0){ // memeriksa banks yang kosong apakah sudah melewati halaman pertama
+      //jika terjadi, maka halaman yang memiliki data kosong bukan halaman pertama 
+      return await getBanks(sort, search, page_size, page_number-1);
+    }
+  }
+  return banks;
 }
 
 /**

@@ -3,20 +3,59 @@ const { hashPassword, passwordMatched } = require('../../../utils/password');
 
 /**
  * Get list of banks
+ * @param {string} sort         - bank sort 
+ * @param {string} search       - bank search 
+ * @param {string} page_size    - bank page size
+ * @param {string} page_number  - bank page number
  * @returns {Array}
  */
-async function getBanks() {
-  const banks = await banksRepository.getBanks();
+async function getBanks(sort, search, page_size, page_number) {
+  const banks = await banksRepository.getBanks(sort);
+
+  if(search){
+    const [searchFieldName, search_key] = search.split(':');
+
+    if(searchFieldName !=='name' && searchFieldName !== 'email'){
+      throw new Error ('Field name hanya bisa dimasukkan "name" atau "email" saja');
+    }
+
+    const hasilSearch = banks.filter(bank=>{ //membuat array baru dengan filter
+      const nilaiField = bank[searchFieldName].toUpperCase();
+      // toUpperCase untuk mengonversi kedua nilai menjadi huruf besar 
+      const nilaiSearch = search_key.toUpperCase();
+      return nilaiField.includes(nilaiSearch);
+      // includes biar tidak menjadi case sensitive(unsensitif)
+    });
+    banks = hasilSearch;
+  }
+
+  if(page_size && page_number){
+    if(!Number.isInteger(page_size)|| page_size<1 || !Number.isInteger(page_number)||page_number<1){
+      throw new Error(
+        'page sizenya sama page number harus bilangannya integer positid'
+      );
+    }
+
+    // menentukan indeks awal array dari potogan data yang diambil
+    const awalArray =(page_number-1)*page_size;
+    
+    // menghitung indeks akhir dari potongan data yang akan diambil
+    const akhirArray = page_number*page_size;
+
+    banks=banks.slice(awalArray,akhirArray);
+    // mengambil data dari pengguna banks mulai dari indeks awalArray hingga sebelum akhirarray
+  }
 
   const results = [];
-  for (let i = 0; i < banks.length; i+= 1){
-    const bank = banks[i];
-    results.push({
+  banks.forEach(bank=> {
+        results.push({
       id: bank.id,
       name: bank.name,
       email: bank.email,
   });
-} 
+});
+  
+
   return results;
 }
 

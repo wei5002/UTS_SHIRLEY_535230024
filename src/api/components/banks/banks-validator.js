@@ -47,7 +47,7 @@ module.exports = {
         .max(32)
         .required()
         .label('New password'),
-        password_confirm: joi.string().required().label('Password confirmation'),
+      password_confirm: joi.string().required().label('Password confirmation'),
     },
   },
 };
