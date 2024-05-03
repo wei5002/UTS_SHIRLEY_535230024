@@ -10,6 +10,8 @@ module.exports = {
       noKTP: joi.string().min(16).max(16).required().label('Nomor KTP'), // min(16).max(16) ini digunakan untuk angka noKTP-nya harus tepat 16 
       name: joi.string().min(1).max(100).required().label('Name'),
       jenisKelamin: joi.string().required().label('Jenis Kelamin (P/L)'),
+      tempatLahir: joi.string().required().label('Tempat Lahir'),
+      tanggalLahir: joi.string().required().label('Tanggal Lahir'),
       noPhone: joi.string().min(11).max(13).required().label('Nomor Telepon'), // min(11) = minimal 11 angka, max(13) = maksimal 13 angka
       email: joi.string().email().required().label('Email'),
       address: joi.string().required().label('Address'),

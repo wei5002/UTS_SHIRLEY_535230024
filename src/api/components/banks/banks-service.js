@@ -18,6 +18,8 @@ async function getBanks() {
       noKTP: bank.noKTP,
       name: bank.name,
       jenisKelamin: bank.jenisKelamin,
+      tempatLahir: bank.tempatLahir,
+      tanggalLahir: bank.tanggalLahir,
       noPhone: bank.noPhone,
       email: bank.email,
       address: bank.address,
@@ -45,6 +47,8 @@ async function getBank(id) {
     nomorRekening: bank.nomorRekening,
     name: bank.name,
     jenisKelamin: bank.jenisKelamin,
+    tempatLahir: bank.tempatLahir,
+    tanggalLahir:bank.tanggalLahir,
     noPhone: bank.noPhone,
     email: bank.email,
     address: bank.address,
@@ -57,18 +61,20 @@ async function getBank(id) {
  * @param {string} noKTP          - Nomor KTP
  * @param {string} name           - Name
  * @param {string} jenisKelamin   - Jenis kelamin
+ * @param {string} tempatLahir    - Tempat Lahir 
+ * @param {string} tanggalLahir   - Tanggal Lahir
  * @param {string} noPhone        - nomor telepon
  * @param {string} email          - Email
  * @param {string} address        - Address
  * @param {string} password       - Password
  * @returns {boolean}
  */
-async function createBank(nomorRekening, noKTP, name, jenisKelamin, noPhone, email, address, password) {
+async function createBank(nomorRekening, noKTP, name, jenisKelamin, tempatLahir, tanggalLahir, noPhone, email, address, password) {
   // Hash password
   const hashedPassword = await hashPassword(password);
 
   try {
-    await banksRepository.createBank(nomorRekening, noKTP, name, jenisKelamin, noPhone, email, address, hashedPassword);
+    await banksRepository.createBank(nomorRekening, noKTP, name, jenisKelamin, tempatLahir, tanggalLahir, noPhone, email, address, hashedPassword);
   } catch (err) {
     return null;
   }

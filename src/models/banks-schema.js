@@ -5,6 +5,8 @@ const banksSchema = {
   noKTP: String,
   name: String,
   jenisKelamin: String,
+  tempatLahir:String,
+  tanggalLahir: String,
   noPhone: String,
   email: String,
   address: String,

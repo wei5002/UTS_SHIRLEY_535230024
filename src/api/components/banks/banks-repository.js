@@ -26,17 +26,21 @@ async function getBank(id) {
  * @param {string} name           - Name
  * @param {string} jenisKelamin   - jenis kelamin
  * @param {string} noPhone        - nomor telepon
+ * @param {string} tempatLahir    - Tempat Lahir
+ * @param {string} tanggalLahir   - Tanggal Lahir
  * @param {string} email          - Email
  * @param {string} address        - address
  * @param {string} password       - Hash  ed password
  * @returns {Promise}
  */
-async function createBank(nomorRekening, noKTP, name, jenisKelamin, noPhone, email, address, password) {
+async function createBank(nomorRekening, noKTP, name, jenisKelamin, tempatLahir, tanggalLahir, noPhone, email, address, password) {
   return Bank.create({
     nomorRekening,
     noKTP,
     name,
     jenisKelamin,
+    tempatLahir,
+    tanggalLahir,    
     noPhone,
     email,
     address,
@@ -47,13 +51,14 @@ async function createBank(nomorRekening, noKTP, name, jenisKelamin, noPhone, ema
 
 /**
  * Update existing bank
- * @param {string} id         - Bank ID
- * @param {string} name       - Name
- * @param {string} email      - Email
- * @param {string} address    - address
+ * @param {string} id           - Bank ID
+ * @param {string} name         - Name
+ * @param {string} noPhone      - Nomor Telepon
+ * @param {string} email        - Email
+ * @param {string} address      - address
  * @returns {Promise}
  */
-async function updateBank(id, name, noPhone, email, address) {
+async function updateBank(id, name,noPhone, email, address) {
   return Bank.updateOne(
     {
       _id: id,

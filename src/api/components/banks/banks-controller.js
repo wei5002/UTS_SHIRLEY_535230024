@@ -54,6 +54,8 @@ async function createBank(request, response, next) {
     const noKTP= request.body.noKTP;
     const name = request.body.name;  
     const jenisKelamin = request.body.jenisKelamin;
+    const tempatLahir = request.body.tempatLahir;
+    const tanggalLahir = request.body.tanggalLahir;
     const noPhone = request.body.noPhone;
     const email = request.body.email;
     const address = request.body.address;
@@ -93,6 +95,8 @@ async function createBank(request, response, next) {
       noKTP,
       name,
       jenisKelamin,
+      tempatLahir,
+      tanggalLahir,
       noPhone,
       email,
       address,
@@ -105,7 +109,7 @@ async function createBank(request, response, next) {
       );
     }
 
-    return response.status(200).json({ nomorRekening, noKTP, name, jenisKelamin, noPhone, email, address });
+    return response.status(200).json({ nomorRekening, noKTP, name, jenisKelamin, tempatLahir, tanggalLahir, noPhone, email, address });
   } catch (error) {
     return next(error);
   }
@@ -122,7 +126,7 @@ async function updateBank(request, response, next) {
   try {
     const id = request.params.id;
     const name = request.body.name;
-    const noPhone = request.body.noPhone;
+    const noPhone = request.body.noPhone;    
     const email = request.body.email;
 
     // Email must be unique
@@ -142,7 +146,7 @@ async function updateBank(request, response, next) {
       );
     }
 
-    return response.status(200).json({ id });
+    return response.status(200).json({ id, name, noPhone, email, message :"Update success!!" });
   } catch (error) {
     return next(error);
   }
@@ -167,7 +171,7 @@ async function deleteBank(request, response, next) {
       );
     }
 
-    return response.status(200).json({ id });
+    return response.status(200).json({ id, message:"Delete Success!" });
   } catch (error) {
     return next(error);
   }
