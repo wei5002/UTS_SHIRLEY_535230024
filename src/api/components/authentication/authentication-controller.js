@@ -16,6 +16,7 @@ async function login(request, response, next) {
   const { email, password } = request.body;
 
   try {
+    //jika tidak terdapapat jumlah gagal atau berhasil login, maka kesemula dari 0 gagal lagi, hingga ia mendapatkan kegagalan 5 kali baru ke if di bawahnya 
     if (!jumlahGagal[email]){
       jumlahGagal[email]={
         awalLogin:0,
@@ -23,7 +24,8 @@ async function login(request, response, next) {
       };
     }
 
-    if (jumlahGagal[email].awalLogin>= 5 && Date.now()- jumlahGagal[email].akhirLogin < 60000){
+    // jadi jika kegagalannya lebih dari 5  kali dan belum setelah 30 menit, ia akan mendapatkan teks Too many failed login attempts 
+    if (jumlahGagal[email].awalLogin>= 5 && Date.now()- jumlahGagal[email].akhirLogin < 1800000){
       throw errorResponder(
         errorTypes.FORBIDDEN,
         'Too many failed login attempts.'
@@ -36,12 +38,15 @@ async function login(request, response, next) {
       password
     );
 
+    // ini seperti yang di atas ( if (!gagalogin))
     if (loginSuccess) {
       jumlahGagal[email].awalLogin = 0;
       jumlahGagal[email].akhirLogin= null;
     return response.status(200).json(loginSuccess);      
     }
     
+    // jika terdapat gagal login, maka awalLogin akan terus di tambahkan 1 dari waktu yang sekrang ini, jika telah mencapai 5 kali awalLoginnya, maka akan
+    // menuju ke if yang atasnya dengan mengurangin waktu terakhir login +30 menit
     jumlahGagal[email].awalLogin += 1;
     jumlahGagal[email].akhirLogin= Date.now();
     throw errorResponder(
